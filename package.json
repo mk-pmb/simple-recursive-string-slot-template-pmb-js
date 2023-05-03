@@ -1,5 +1,5 @@
 { "name": "simple-recursive-string-slot-template-pmb",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "In your template string, replace all slot (marked by a custom regexp) with string values from your dictionary object, even recursively, but avoiding loops.",
   "keywords": [
     "recursive",
