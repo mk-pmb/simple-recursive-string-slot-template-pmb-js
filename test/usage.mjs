@@ -53,7 +53,7 @@ test('How a fork bomb works', (t) => {
     task2: 'starts another &proc;',
   };
   const msg = err2str(() => srt(tpl, rgx, dict));
-  t.equal(msg, 'Error: Recursive loop in slot &proc; @ proc → task1');
+  t.equal(msg, 'Error: Recursive loop for slot &proc; @ proc → task1');
 });
 
 
