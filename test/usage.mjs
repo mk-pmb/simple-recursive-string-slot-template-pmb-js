@@ -35,11 +35,15 @@ test('Lunch', (t) => {
 
 
 test('Missing slot', (t) => {
-  t.plan(1);
+  t.plan(3);
   const tpl = 'Oh noes, I accidentially #verb the whole bottle.';
   const rgx = /#\w+/g;
-  const msg = err2str(() => srt(tpl, rgx));
-  t.equal(msg, 'Error: No replacement for slot #verb @ top level');
+  const errNoRep = 'Error: No replacement for slot #verb @ top level';
+  t.equal(err2str(() => srt(tpl, rgx)), errNoRep);
+
+  const dict = { verb: undefined };
+  t.same(Object.keys(dict), ['verb']);
+  t.equal(err2str(() => srt(tpl, rgx, dict)), errNoRep);
 });
 
 
