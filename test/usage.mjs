@@ -2,7 +2,7 @@
 
 import test from 'p-tape';
 
-import srt from '../srt.mjs';
+import srt from '../src/index.mjs';
 
 function err2str(f) { try { return f(); } catch (e) { return String(e); } }
 
