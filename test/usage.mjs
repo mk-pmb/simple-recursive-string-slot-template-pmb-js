@@ -5,6 +5,7 @@ import test from 'p-tape';
 import srt from '../src/index.mjs';
 
 function err2str(f) { try { return f(); } catch (e) { return String(e); } }
+function toSortedList(x) { return Array.from(x).sort(); }
 
 
 test('Lunch', (t) => {
@@ -60,6 +61,35 @@ test('How a fork bomb works', (t) => {
   t.equal(msg, 'Error: Recursive loop for slot &proc; @ proc → task1');
 });
 
+
+test('reportUnused', (t) => {
+  t.plan(10);
+  const tpl = ('SELECT name, icon FROM users WHERE uid = %userId'
+    + ' AND level >= %minLv AND level <= %maxLv');
+  const rgx = /%(\w+)/g;
+  const dict = { userId: 23, groupId: 42, minLv: 1, maxLv: 99, banned: false };
+  const opt = { reportUnused: 'error' };
+  const msg1 = err2str(() => srt(tpl, rgx, dict, opt));
+  t.equal(msg1, 'Error: Unused slots: banned, groupId');
+  t.same(Object.keys(opt), ['reportUnused']);
+
+  const wantText = ('SELECT name, icon FROM users WHERE uid = 23'
+    + ' AND level >= 1 AND level <= 99');
+
+  const rUnSet = new Set();
+  opt.reportUnused = rUnSet;
+  t.equal(srt(tpl, rgx, dict, opt), wantText);
+  t.equal(opt.reportUnused, rUnSet);
+  t.same(Object.keys(opt), ['reportUnused']);
+  t.same(toSortedList(rUnSet), ['banned', 'groupId']);
+
+  const rUnArray = [];
+  opt.reportUnused = rUnArray;
+  t.equal(srt(tpl, rgx, dict, opt), wantText);
+  t.equal(opt.reportUnused, rUnArray);
+  t.same(Object.keys(opt), ['reportUnused']);
+  t.same(rUnArray.sort(), ['banned', 'groupId']);
+});
 
 
 

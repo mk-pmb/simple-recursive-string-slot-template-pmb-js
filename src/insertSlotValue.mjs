@@ -28,6 +28,7 @@ const EX = function insertSlotValue(tpl, rgx, dict, opt, slotStack) {
     if (!k) { fail('Invalid slot name', m, slotStack); }
     if (!hasOwn(dict, k)) { fail('No replacement', m, slotStack); }
     if (slotStack.includes(k)) { fail('Recursive loop', m, slotStack); }
+    if (opt.unusedSlots) { opt.unusedSlots.delete(k); }
     return insertSlotValue(String(dict[k]), rgx, dict, opt, [...slotStack, k]);
   });
 };
